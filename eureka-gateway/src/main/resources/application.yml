@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: eureka-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: dynamic-msa-route
+              uri: lb://{serviceId}
+              predicates:
+                - Path=/{serviceId}/**
+              filters:
+                - RewritePath=/(?<serviceId>[^/]+)/(?<segment>.*), /$\{segment}
+
+            - id: eureka-client-route
+              uri: lb://eureka-user
+              predicates:
+                - Path=/client/** #해당 경로로 오는 모든 요청을 라우터로 매핑한다~
+              filters:
+                - RewritePath=/client/(?<segment>.*), /$\{segment} #해당 url 을 제외하고 요청을 전달
+  main:
+    web-application-type: reactive
+
+springdoc:
+  swagger-ui:
+    path: /v3/swagger-ui.html
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://localhost:8761/eureka/'
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
+    lease-renewal-interval-in-seconds: 30  # 하트비트 간격(기본 30초)
+    lease-expiration-duration-in-seconds: 90  # 등록 만료 시간(기본 90초)

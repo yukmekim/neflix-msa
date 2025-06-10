@@ -1,0 +1,39 @@
+# version: '3.8'
+
+services:
+  # Eureka 서버 서비스 정의
+  eureka-server:
+    build:
+      context: . # 빌드 컨텍스트를 프로젝트 root 폴더로 설정
+      dockerfile: ./eureka-server/Dockerfile # 서버 모듈의 Dockerfile 경로 지정
+    container_name: eureka-server-container
+    ports:
+      - "8761:8761"
+
+  # Eureka 클라이언트 서비스 정의
+  eureka-client:
+    build:
+      context: . # 빌드 컨텍스트를 프로젝트 root 폴더로 설정
+      dockerfile: ./eureka-gateway/Dockerfile # 클라이언트 모듈의 Dockerfile 경로 지정
+    container_name: eureka-gateway-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+
+  streaming-db:
+    image: postgres:latest
+    container_name: streaming-db
+    ports:
+      - "6000:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin0070
+      POSTGRES_DB: STR_DB
+    volumes:
+      - streaming-db-data:/var/lib/postgresql/data
+
+volumes:
+  streaming-db-data:
+
+
