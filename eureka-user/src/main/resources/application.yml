@@ -27,6 +27,10 @@ sso:
   kakao:
     client-id: 193b02529f7a0bc6fa91fcd02350fccb
     client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
-    redirect-uri: http://localhost:8081/api/v1/user/callback
+    redirect-uri: http://localhost:8081/api/v1/user/redirect
     host: https://kauth.kakao.com
     api-host: https://kapi.kakao.com
+
+jwt:
+  secret: XqJ7f2t+a3V8c3l+Z29xM3p1OHcwMXE0cmQ2czV0N3g5eTJrYWs0bG1uNTVvN3A2cTByc3U3dnk4d3h5ejk=
+  expiration-time: 3600000 # 만료 시간 (밀리초)

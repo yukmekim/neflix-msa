@@ -1,9 +1,11 @@
 package com.main.eureka.api.controller;
 
 import com.main.eureka.api.dto.Response;
+import com.main.eureka.api.dto.UserRequest;
 import com.main.eureka.api.service.Oauth2Service;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,7 +63,7 @@ public class ApiController {
      * jwt 토큰 발급 및 사용자 정보 최소한 수집 및 자동 가입 진행
      * */
     @PostMapping("/callback")
-    public ResponseEntity<Response<?>> handleCallback(@RequestBody String code) {
-        return ResponseEntity.ok(oAuth2Service.getUserProfile(code));
+    public ResponseEntity<Response<?>> handleCallback(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(oAuth2Service.getUserProfile(userRequest.getCode()));
     }
 }
