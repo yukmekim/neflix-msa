@@ -22,3 +22,11 @@ springdoc:
     path: /v3/swagger-ui.html # 각 서비스의 Swagger UI 경로
   api-docs:
     path: /v3/api-docs
+
+sso:
+  kakao:
+    client-id: 193b02529f7a0bc6fa91fcd02350fccb
+    client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
+    redirect-uri: http://localhost:8081/api/v1/user/callback
+    host: https://kauth.kakao.com
+    api-host: https://kapi.kakao.com
