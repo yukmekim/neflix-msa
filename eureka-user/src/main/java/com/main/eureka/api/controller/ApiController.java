@@ -5,11 +5,11 @@ import com.main.eureka.api.dto.UserRequest;
 import com.main.eureka.api.service.Oauth2Service;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,19 +51,28 @@ public class ApiController {
                 ,"authorize success"));
     }
 
+    @Operation(summary = "로그인 사용자 정보 요청",
+            description = "redirect로 처리하는 소셜 로그인의 경우 앱에서 요청을 받아 사용자 정보를 조회")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "요청이 성공적으로 처리됨."),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청 오류. 주로 API에 필요한 필수 파라미터와 관련된 오류입니다."),
+                    @ApiResponse(responseCode = "401", description = "인증 오류"),
+                    @ApiResponse(responseCode = "403", description = "권한/퍼미션 오류"),
+                    @ApiResponse(responseCode = "500", description = "서버 내부에서 예상치 못한 오류 발생.")
+            }
+    )
+    @PostMapping(value = "/callback", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response<?>> handleCallback(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(oAuth2Service.getUserProfile(userRequest));
+    }
+
+    /**
+     * 리다이렉트 테스트용 api
+     * */
     @Hidden
     @GetMapping("/redirect")
     public ResponseEntity<String> handleRedirect(@RequestParam String code) {
         return ResponseEntity.ok(code);
-    }
-
-    /**
-     * redirect url을 flutter app으로 전달 - 개발 방향 맞는지 코디님 확인 필요
-     * flutter에서 전달받은 code로 callback 요청
-     * jwt 토큰 발급 및 사용자 정보 최소한 수집 및 자동 가입 진행
-     * */
-    @PostMapping("/callback")
-    public ResponseEntity<Response<?>> handleCallback(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(oAuth2Service.getUserProfile(userRequest.getCode()));
     }
 }

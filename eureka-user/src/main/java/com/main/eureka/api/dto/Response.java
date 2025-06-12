@@ -9,22 +9,22 @@ import lombok.*;
 @AllArgsConstructor
 public class Response<T> {
     private boolean success;
-    private String code;
+    private String status;
     private T data;
     private String message;
 
-    public static <T> Response<T> payload(boolean success, String code, String message) {
+    public static <T> Response<T> payload(boolean success, String status, String message) {
         return Response.<T>builder()
                 .success(success)
-                .code(code)
+                .status(status)
                 .message(message)
                 .build();
     }
 
-    public static <T> Response<T> payload(boolean success, String code, T data, String message) {
+    public static <T> Response<T> payload(boolean success, String status, T data, String message) {
         return Response.<T>builder()
                 .success(success)
-                .code(code)
+                .status(status)
                 .data(data)
                 .message(message)
                 .build();
