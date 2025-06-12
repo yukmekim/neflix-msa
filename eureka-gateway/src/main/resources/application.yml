@@ -9,19 +9,13 @@ spring:
       server:
         webflux:
           routes:
-            - id: openapi-route
-              uri: lb://{serviceId}
-              predicates:
-                - Path=/v3/api-docs/{serviceId}
-              filters:
-                - RewritePath=/v3/api-docs/(?<serviceId>.*), /api-docs
-
-            - id: eureka-client-route
+            # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
+            - id: eureka-user-route
               uri: lb://eureka-user
               predicates:
-                - Path=/client/** #해당 경로로 오는 모든 요청을 라우터로 매핑한다~
+                - Path=/v3/api-docs/eureka-user
               filters:
-                - RewritePath=/v3/api-docs/(?<serviceId>.*), /v3/api-docs #해당 url 을 제외하고 요청을 전달
+                - RewritePath=/v3/api-docs/(?<serviceId>.*), /v3/api-docs #해당 url 제외하고 요청을 전달
   main:
     web-application-type: reactive
 

@@ -33,5 +33,5 @@ sso:
 
 jwt:
   secret: XqJ7f2t+a3V8c3l+Z29xM3p1OHcwMXE0cmQ2czV0N3g5eTJrYWs0bG1uNTVvN3A2cTByc3U3dnk4d3h5ejk=
-  expiration-time: 300000 # 만료 시간 (밀리초) 5분
+  expiration-time: 60000 # 만료 시간 (밀리초) 5분
   refresh-expiration-time: 604800000 # 리프레시 토큰 만료 시간 (밀리초) 7일

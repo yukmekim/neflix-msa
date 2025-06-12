@@ -1,8 +1,10 @@
 package com.main.eureka.api.controller;
 
+import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.api.dto.Response;
 import com.main.eureka.api.dto.UserRequest;
 import com.main.eureka.api.service.Oauth2Service;
+import com.main.eureka.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/user")
 public class ApiController {
     private final Oauth2Service oAuth2Service;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "사용자 API 연결 상태 확인")
     @GetMapping("/connect")
@@ -51,8 +54,8 @@ public class ApiController {
                 ,"authorize success"));
     }
 
-    @Operation(summary = "로그인 사용자 정보 요청",
-            description = "redirect로 처리하는 소셜 로그인의 경우 앱에서 요청을 받아 사용자 정보를 조회")
+    @Operation(summary = "로그인 - 리다이렉트 처리시 사용자 정보 요청",
+            description = "리다이렉트로 처리하는 소셜 로그인의 경우 앱에서 요청을 받아 사용자 정보를 조회")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "요청이 성공적으로 처리됨."),
@@ -62,9 +65,16 @@ public class ApiController {
                     @ApiResponse(responseCode = "500", description = "서버 내부에서 예상치 못한 오류 발생.")
             }
     )
-    @PostMapping(value = "/callback", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<?>> handleCallback(@RequestBody UserRequest userRequest) {
+    @PostMapping(value = "/login-redirect", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(oAuth2Service.getUserProfile(userRequest));
+    }
+
+    @Operation(summary = "로그아웃 - 리프레시 토큰 무효화",
+            description = "리프레시 토큰을 무효화 로그아웃 처리")
+    @PostMapping(value = "/logout")
+    public ResponseEntity<Response<Void>> logout(@RequestBody RefreshToken refreshToken) {
+        return ResponseEntity.ok(Response.payload(true, "200", "리프레시 토큰 무효화"));
     }
 
     /**

@@ -60,7 +60,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(userId)
                 .issuedAt(now)
-                .expiration(expiryDate)
+                .expiration(expiryDate) // 만료 시간
                 .id(UUID.randomUUID().toString()) // Refresh Token 고유 ID (JTI)
                 .signWith(getSigningKey())
                 .compact();

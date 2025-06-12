@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -47,7 +49,9 @@ public class Oauth2Service {
 
     public Response<?> getUserProfile(UserRequest request) {
         try {
-            String accessToken = getAccessToken(request.getCode());
+            String accessToken = Optional.ofNullable(getAccessToken(request.getCode()))
+                    .orElseThrow(() -> new BadCredentialsException("invalid_grant : authorization code not found"));
+
             String response = httpRequest( "POST", kakaoLoginService.getProfileUrl(), accessToken, null);
 
             JsonNode profileNode = objectMapper.readTree(response);
@@ -55,9 +59,9 @@ public class Oauth2Service {
             String userEmail = profileNode.path("kakao_account").path("email").asText();
             String userName = profileNode.path("properties").path("nickname").asText();
 
-            // TODO 데이터베이스에 가입 정보 확인후, 가입 또는 회원 정보 조회 로직 추가
+            // TODO 데이터베이스에 가입 정보 확인후, 가입 또는 회원 정보 조회 로직 추가 - 소셜 로그인에서 제공하는 기본 정보만 저장
 
-            // TODO Token 관리를 RDBMS, Redis 중 고민 필요
+            // TODO Token 관리 RDBMS, Redis 중 고민 필요
             String jwtToken = jwtTokenProvider.generateAccessToken(userId, userEmail, userName);
             String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
@@ -66,11 +70,13 @@ public class Oauth2Service {
             loginInfo.put("refreshToken", refreshToken);
             loginInfo.put("userProfile", profileNode);
 
-//            return Response.payload(true, "200", objectMapper.readValue(response, Object.class), "profile");
             return Response.payload(true, "200", loginInfo, "profile");
+        } catch (BadCredentialsException bce) {
+            log.error(bce.getMessage());
+            return Response.payload(false, "401", bce.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
-            return Response.payload(false, "500", "서버 오류");
+            return Response.payload(false, "500", "서버 내부에서 예상치 못한 오류 발생.");
         }
     }
 
