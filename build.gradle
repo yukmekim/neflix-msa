@@ -11,7 +11,9 @@ ext {
             'org.springframework.boot:spring-boot-starter-security', // spring-security
             'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client',
             'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0', // swagger-ui
-            'io.jsonwebtoken:jjwt-api:0.12.5'
+            'io.jsonwebtoken:jjwt-api:0.12.5',
+            'io.jsonwebtoken:jjwt-impl:0.12.5',
+            'io.jsonwebtoken:jjwt-jackson:0.12.5'
     ]
 }
 

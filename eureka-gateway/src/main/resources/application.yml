@@ -8,12 +8,16 @@ spring:
     gateway:
       server:
         webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
           routes:
             # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
             - id: eureka-user-route
               uri: lb://eureka-user
               predicates:
-                - Path=/v3/api-docs/eureka-user
+                - Path=/v3/api-docs/{serviceId}
               filters:
                 - RewritePath=/v3/api-docs/(?<serviceId>.*), /v3/api-docs #해당 url 제외하고 요청을 전달
   main:
@@ -22,6 +26,11 @@ spring:
 springdoc:
   swagger-ui:
     path: /v3/swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+    groups:
+      enabled: true
 
 eureka:
   client:
