@@ -1,4 +1,4 @@
-package com.main.eureka.security;
+package com.main.eureka.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
-class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 

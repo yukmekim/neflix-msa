@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.eureka.api.dto.KaKaoToken;
 import com.main.eureka.api.dto.Response;
 import com.main.eureka.api.dto.UserRequest;
-import com.main.eureka.security.JwtTokenProvider;
+import com.main.eureka.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;

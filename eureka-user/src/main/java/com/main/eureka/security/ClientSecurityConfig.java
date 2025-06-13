@@ -1,4 +1,6 @@
 package com.main.eureka.security;
+import com.main.eureka.security.jwt.JwtAuthenticationFilter;
+import com.main.eureka.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -4,7 +4,7 @@ import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.api.dto.Response;
 import com.main.eureka.api.dto.UserRequest;
 import com.main.eureka.api.service.Oauth2Service;
-import com.main.eureka.security.JwtTokenProvider;
+import com.main.eureka.security.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,14 +29,8 @@ public class ApiController {
         return ResponseEntity.ok(Response.payload(true, "200", "connect to user client"));
     }
 
-    /**
-     * Kakao, Naver 로그인 진행시 인가 코드 요청
-     * @param scope 추가 항목 동의 받기 요청 시 사용, 사용자에게 동의 요청할 동의항목 ID 목록
-     * @param type 인가 요청할 소셜 타입
-     * @return redirect url
-     * */
     @Operation(summary = "소셜 로그인 인가 코드 요청",
-            description = "Kakao, Naver 로그인 진행을 위한 인가 코드 요청")
+            description = "kakao, naver 로그인 진행을 위한 인가 코드 요청")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "요청이 성공적으로 처리됨."),

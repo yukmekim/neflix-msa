@@ -4,16 +4,18 @@ server:
 spring:
   application:
     name: eureka-user
+  config:
+    import: oauth2.yml
 
 eureka:
   client:
     service-url:
-      defaultZone: 'http://localhost:8761/eureka/'
+      defaultZone: 'http://host.docker.internal:8761/eureka/'
     fetch-registry: true
     register-with-eureka: true
   instance:
-    prefer-ip-address: true
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
+#    prefer-ip-address: true
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
     lease-renewal-interval-in-seconds: 30  # 하트비트 간격(기본 30초)
     lease-expiration-duration-in-seconds: 90  # 등록 만료 시간(기본 90초)
 
@@ -22,14 +24,6 @@ springdoc:
     path: /v3/swagger-ui.html # 각 서비스의 Swagger UI 경로
   api-docs:
     path: /v3/api-docs
-
-sso:
-  kakao:
-    client-id: 193b02529f7a0bc6fa91fcd02350fccb
-    client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
-    redirect-uri: http://localhost:8080/eureka-user/api/v1/user/redirect
-    host: https://kauth.kakao.com
-    api-host: https://kapi.kakao.com
 
 jwt:
   secret: XqJ7f2t+a3V8c3l+Z29xM3p1OHcwMXE0cmQ2czV0N3g5eTJrYWs0bG1uNTVvN3A2cTByc3U3dnk4d3h5ejk=

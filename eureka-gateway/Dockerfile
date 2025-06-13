@@ -8,6 +8,6 @@ RUN chmod +x ./gradlew && ./gradlew build --no-daemon
 FROM eclipse-temurin:17-jre-focal
 WORKDIR /app
 
-COPY --from=build /app/eureka-client/build/libs/*.jar app.jar
+COPY --from=build /app/eureka-gateway/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 

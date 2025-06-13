@@ -1,4 +1,4 @@
-package com.main.eureka.security;
+package com.main.eureka.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

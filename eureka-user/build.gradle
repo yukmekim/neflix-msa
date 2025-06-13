@@ -43,7 +43,7 @@ dependencyManagement {
 }
 
 bootJar {
-    mainClass = 'com.main.eureka.EurekaClientApplication'
+    mainClass = 'com.main.eureka.UserClientApplication'
 }
 
 tasks.named('test') {
