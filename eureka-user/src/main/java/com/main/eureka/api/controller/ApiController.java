@@ -3,7 +3,7 @@ package com.main.eureka.api.controller;
 import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.api.dto.Response;
 import com.main.eureka.api.dto.UserRequest;
-import com.main.eureka.api.service.Oauth2Service;
+import com.main.eureka.api.service.OAuth2Service;
 import com.main.eureka.security.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class ApiController {
-    private final Oauth2Service oAuth2Service;
+    private final OAuth2Service oAuth2Service;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "사용자 API 연결 상태 확인")

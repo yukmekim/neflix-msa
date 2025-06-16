@@ -22,7 +22,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Oauth2Service {
+public class OAuth2Service {
     private final KakaoLoginService kakaoLoginService;
 
     private final ObjectMapper objectMapper;

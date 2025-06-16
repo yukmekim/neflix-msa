@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/eureka/**").permitAll() // Eureka 대시보드 허용
+                        .requestMatchers("/eureka/**", "/actuator/**", "/").permitAll() // server 에 접속하는 기본 경로를 허용
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> {}); // httpBasic 활성화

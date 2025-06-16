@@ -14,23 +14,26 @@ spring:
               lower-case-service-id: true
           routes:
             # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
-            - id: eureka-user-route
+            - id: eureka-user
               uri: lb://eureka-user
               predicates:
-                - Path=/v3/api-docs/{serviceId}
+                - Path=/api/**
               filters:
-                - RewritePath=/v3/api-docs/(?<serviceId>.*), /v3/api-docs #해당 url 제외하고 요청을 전달
+                - RewritePath=/api/(?<segment>.*), /api/$\{segment}
+
+            - id: eureka-user
+              uri: lb://eureka-user
+              predicates:
+                - Path=/v3/api-docs/eureka-user
+              filters:
+                - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
   main:
     web-application-type: reactive
 
 springdoc:
   swagger-ui:
     path: /v3/swagger-ui.html
-  api-docs:
-    path: /v3/api-docs
-    enabled: true
-    groups:
-      enabled: true
+    use-root-path: true
 
 eureka:
   client:
@@ -39,7 +42,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
   instance:
-#    prefer-ip-address: true
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
     lease-renewal-interval-in-seconds: 30  # 하트비트 간격(기본 30초)
     lease-expiration-duration-in-seconds: 90  # 등록 만료 시간(기본 90초)
