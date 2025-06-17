@@ -1,7 +1,7 @@
 sso:
   kakao:
-    client-id: 193b02529f7a0bc6fa91fcd02350fccb #발급받은 client id
-    client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2 #발급받은 client secret
+    client-id: #발급받은 client id
+    client-secret: #발급받은 client secret
     redirect-uri: http://localhost:8080/api/v1/user/redirect
     host: https://kauth.kakao.com
     api-host: https://kapi.kakao.com

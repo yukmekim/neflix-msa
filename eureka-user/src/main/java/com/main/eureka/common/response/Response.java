@@ -13,10 +13,6 @@ public class Response<T> {
     private T data;
     private String message;
 
-    public enum StatusCode {
-
-    }
-
     public static <T> Response<T> payload(boolean success, String status, String message) {
         return Response.<T>builder()
                 .success(success)

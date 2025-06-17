@@ -18,8 +18,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class OAuth2Service {
-    private final KakaoLoginService kakaoLoginService;
-
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 

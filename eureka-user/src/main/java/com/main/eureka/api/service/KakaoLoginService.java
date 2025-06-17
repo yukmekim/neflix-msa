@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.eureka.api.dto.KaKaoToken;
 import com.main.eureka.api.dto.UserProfile;
-import com.main.eureka.api.dto.UserResponse;
 import com.main.eureka.common.util.HttpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
