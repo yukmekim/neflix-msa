@@ -2,6 +2,6 @@ sso:
   kakao:
     client-id: 193b02529f7a0bc6fa91fcd02350fccb
     client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
-    redirect-uri: http://localhost:8080/eureka-user/api/v1/user/redirect
+    redirect-uri: http://localhost:8080/api/v1/user/redirect
     host: https://kauth.kakao.com
     api-host: https://kapi.kakao.com

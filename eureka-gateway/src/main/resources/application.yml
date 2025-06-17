@@ -12,7 +12,28 @@ spring:
             locator:
               enabled: true
               lower-case-service-id: true
+              include-expression: "serviceId.matches('.*-service')"
+              filters:
+                - StripPrefix=1               # 기본 필터 적용
+                - name: CircuitBreaker        # 모든 서비스에 Circuit Breaker 적용
+                  args:
+                    name: default-circuit-breaker
+                    fallback: forward:/fallback
           routes:
+#            - id: openapi-aggregate
+#              uri: http://localhost:8080
+#              predicates:
+#                - Path=/api/**
+#              filters:
+#                - RewritePath=/api/(?<segment>.*), /api/$\{segment}
+
+#            - id: openapi-aggregate
+#              uri: http://localhost:8080
+#              predicates:
+#                - Path=/v3/api-docs/**
+#              filters:
+#                - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
+
             # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
             - id: eureka-user
               uri: lb://eureka-user
@@ -27,13 +48,15 @@ spring:
                 - Path=/v3/api-docs/eureka-user
               filters:
                 - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
+
   main:
     web-application-type: reactive
 
 springdoc:
   swagger-ui:
-    path: /v3/swagger-ui.html
+    url: /v3/api-docs
     use-root-path: true
+    validator-url: ""
 
 eureka:
   client:

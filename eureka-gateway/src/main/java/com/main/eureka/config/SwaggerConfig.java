@@ -37,22 +37,22 @@ public class SwaggerConfig {
 //        };
 //    }
 
-    @Bean
-    public OpenApiCustomizer serverUrlCustomizer() {
-        return openApi -> {
-            openApi.setServers(null);
-
-            openApi.addServersItem(new Server().url("/")
-                    .description("API Gateway"));
-
-            openApi.getPaths().forEach(((path, pathItem) -> {
-                pathItem.readOperations().forEach(operation -> {
-                    operation.setServers(null);
-                    openApi.addServersItem(new Server().url("/"));
-                });
-            }));
-        };
-    }
+//    @Bean
+//    public OpenApiCustomizer serverUrlCustomizer() {
+//        return openApi -> {
+//            openApi.setServers(null);
+//
+//            openApi.addServersItem(new Server().url("/")
+//                    .description("API Gateway"));
+//
+//            openApi.getPaths().forEach(((path, pathItem) -> {
+//                pathItem.readOperations().forEach(operation -> {
+//                    operation.setServers(null);
+//                    openApi.addServersItem(new Server().url("/"));
+//                });
+//            }));
+//        };
+//    }
 
     @Bean
     public List<GroupedOpenApi> dynamicGroups() {
@@ -67,9 +67,10 @@ public class SwaggerConfig {
 
     @Bean
     public CommandLineRunner initGroups(SwaggerUiConfigParameters config) {
-        List<String> discoveryClientList = discoveryClient.getServices();
         return args -> {
-            discoveryClient.getServices().forEach(config::addGroup);
+            discoveryClient.getServices().stream()
+                    .filter(service -> !service.equals("eureka-gateway")) // gateway 는 Swagger UI 그룹에서 제외
+                    .forEach(config::addGroup);
         };
     }
 }

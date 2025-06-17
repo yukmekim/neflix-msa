@@ -2,6 +2,8 @@ package com.main.eureka.api.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
@@ -34,9 +36,14 @@ public class KakaoLoginService {
                 .toUriString();
     }
 
-    public String getTokenParams(String code) {
-        return String.format("grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s",
-                clientId, clientSecret, code);
+    public MultiValueMap<String,String> getTokenParams(String code) {
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+        params.add("code", code);
+
+        return params;
     }
 
     public String getTokenUrl() {

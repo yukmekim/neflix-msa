@@ -6,6 +6,15 @@ spring:
     name: eureka-user
   config:
     import: oauth2.yml
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 0
 
 eureka:
   client:

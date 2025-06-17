@@ -1,4 +1,4 @@
-package com.main.eureka.api.dto;
+package com.main.eureka.common.response;
 
 import lombok.*;
 

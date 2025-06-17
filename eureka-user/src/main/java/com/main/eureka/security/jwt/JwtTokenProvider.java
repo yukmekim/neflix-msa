@@ -30,7 +30,6 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // JWT 생성 메서드
     /**
      * JWT 토큰 발급
      * @param userId 사용자 ID
@@ -40,6 +39,7 @@ public class JwtTokenProvider {
      * */
     public String generateAccessToken(String userId, String userEmail, String userName) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
         claims.put("email", userEmail);
         claims.put("name", userName);
 

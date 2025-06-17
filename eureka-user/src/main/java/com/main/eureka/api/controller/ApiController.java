@@ -1,8 +1,8 @@
 package com.main.eureka.api.controller;
 
 import com.main.eureka.api.dto.RefreshToken;
-import com.main.eureka.api.dto.Response;
-import com.main.eureka.api.dto.UserRequest;
+import com.main.eureka.common.response.Response;
+import com.main.eureka.api.dto.OAuthRequest;
 import com.main.eureka.api.service.OAuth2Service;
 import com.main.eureka.security.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -60,8 +60,8 @@ public class ApiController {
             }
     )
     @PostMapping(value = "/login-redirect", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(oAuth2Service.getUserProfile(userRequest));
+    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody OAuthRequest oAuthRequest) {
+        return ResponseEntity.ok(oAuth2Service.getUserProfile(oAuthRequest));
     }
 
     @Operation(summary = "로그아웃 - 리프레시 토큰 무효화",
