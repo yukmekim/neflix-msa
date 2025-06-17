@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/user")
 public class ApiController {
     private final OAuth2Service oAuth2Service;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "사용자 API 연결 상태 확인")
     @GetMapping("/connect")
@@ -40,12 +39,9 @@ public class ApiController {
             }
     )
     @GetMapping("/authorize")
-    public ResponseEntity<Response<String>> authorize(@RequestParam(required = false) String scope,
-                                                      @RequestParam String type) {
-        return ResponseEntity.ok(Response.payload(true
-                , "200"
-                , oAuth2Service.getAuthUrl(scope, type)
-                ,"authorize success"));
+    public ResponseEntity<Response<String>> authorize(@RequestParam String provider,
+                                                      @RequestParam(required = false) String scope) {
+        return ResponseEntity.ok(oAuth2Service.getAuthUrl(provider, scope));
     }
 
     @Operation(summary = "로그인 - 리다이렉트 처리시 사용자 정보 요청",

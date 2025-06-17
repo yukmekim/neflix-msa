@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OAuthRequest {
     private String code;
-    private String type;
+    private String provider;
 }

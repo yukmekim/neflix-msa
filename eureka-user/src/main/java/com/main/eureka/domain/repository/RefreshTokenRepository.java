@@ -16,7 +16,7 @@ public class RefreshTokenRepository {
     private static final String TOKEN_KEY = "token:";
 
     public void save(String userId, String token) {
-        String key = String.format("%s:%s:%s",TOKEN_KEY, userId, jwtTokenProvider.extractAllClaims(token).getId());
+        String key = String.format("%s%s:%s",TOKEN_KEY, userId, jwtTokenProvider.extractAllClaims(token).getId());
         long expiration = jwtTokenProvider.extractAllClaims(token).getExpiration().getTime() - System.currentTimeMillis();
 
         redisTemplate.opsForValue().set(key,

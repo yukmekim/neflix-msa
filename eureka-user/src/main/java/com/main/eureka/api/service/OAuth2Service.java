@@ -1,12 +1,9 @@
 package com.main.eureka.api.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.main.eureka.api.dto.KaKaoToken;
+import com.main.eureka.api.dto.UserProfile;
 import com.main.eureka.common.response.Response;
 import com.main.eureka.api.dto.OAuthRequest;
 import com.main.eureka.api.dto.UserResponse;
-import com.main.eureka.common.util.HttpUtil;
 import com.main.eureka.domain.repository.RefreshTokenRepository;
 import com.main.eureka.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -22,38 +20,31 @@ import java.util.Optional;
 public class OAuth2Service {
     private final KakaoLoginService kakaoLoginService;
 
-    private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public String getAuthUrl(String scope, String type) {
-        return kakaoLoginService.getAuthUrl(scope);
-    }
+    private final Map<String, OAuth2LoginService> services;
 
-    public String getAccessToken(String code) {
+    public Response<String> getAuthUrl(String provider, String scope) {
         try {
-            String response = HttpUtil.postForm(kakaoLoginService.getTokenUrl(), kakaoLoginService.getTokenParams(code));
-            KaKaoToken tokenInfo = objectMapper.readValue(response, KaKaoToken.class);
-
-            return tokenInfo.getAccess_token();
-        } catch (Exception e) {
-            log.error("AccessToken error : {}", e.getMessage());
-            return null;
+            OAuth2LoginService service = Optional.ofNullable(services.get(provider + "LoginService"))
+                    .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 OAuth2 제공자입니다."));
+            return Response.payload(true, "200", service.getAuthUrl(scope), "authorize success");
+        } catch (IllegalArgumentException iae) {
+            log.error("IllegalArgumentException : {}", iae.getMessage());
+            return Response.payload(false, "400", iae.getMessage());
         }
     }
 
     public Response<?> getUserProfile(OAuthRequest request) {
         try {
-            String accessToken = Optional.ofNullable(getAccessToken(request.getCode()))
-                    .orElseThrow(() -> new BadCredentialsException("invalid_grant : authorization code not found"));
+            OAuth2LoginService service = Optional.ofNullable(services.get(request.getProvider() + "LoginService"))
+                    .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 OAuth2 제공자입니다."));
 
-            String response = HttpUtil.postForm(kakaoLoginService.getProfileUrl(), accessToken, null);
-
-            //TODO 소셜 로그인별 사용자 정보(profileNode) 파싱 필요
-            JsonNode profileNode = objectMapper.readTree(response);
-            String userId = profileNode.path("id").asText();
-            String userEmail = profileNode.path("kakao_account").path("email").asText();
-            String userName = profileNode.path("properties").path("nickname").asText();
+            UserProfile userProfile = service.getUserProfile(request.getCode());
+            String userId = userProfile.getUserId();
+            String userEmail = userProfile.getEmail();
+            String userName = userProfile.getName();
 
             // TODO 데이터베이스에 가입 정보 확인후, 가입 또는 회원 정보 조회 로직 추가 - 소셜 로그인에서 제공하는 기본 정보만 저장
 
@@ -65,14 +56,17 @@ public class OAuth2Service {
 
             UserResponse userResponse = UserResponse.builder()
                     .userId(userId)
-                    .accessToken(jwtToken)
+                    .name(userName)
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
                     .build();
 
-            return Response.payload(true, "200", userResponse, "profile");
+            return Response.payload(true, "200", userResponse, "login success");
+        } catch (IllegalArgumentException iae) {
+            log.error("IllegalArgumentException : {}", iae.getMessage());
+            return Response.payload(false, "400", iae.getMessage());
         } catch (BadCredentialsException bce) {
-            log.error(bce.getMessage());
+            log.error("BadCredentialsException : {}", bce.getMessage());
             return Response.payload(false, "401", bce.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
