@@ -2,9 +2,11 @@ package com.main.eureka.api.controller;
 
 import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.common.response.Response;
-import com.main.eureka.api.dto.OAuthRequest;
-import com.main.eureka.api.service.OAuth2Service;
-import com.main.eureka.security.jwt.JwtTokenProvider;
+import com.main.eureka.domain.enums.OAuth2Provider;
+import com.main.eureka.security.oauth2.impl.OAuth2ServiceImpl;
+import com.main.eureka.security.oauth2.request.OAuth2CallbackRequest;
+import com.main.eureka.security.oauth2.request.OAuth2UrlRequest;
+import com.main.eureka.security.oauth2.response.OAuth2UrlResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,12 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class ApiController {
-    private final OAuth2Service oAuth2Service;
+    private final OAuth2ServiceImpl oAuth2Service;
 
-    @Operation(summary = "사용자 API 연결 상태 확인")
-    @GetMapping("/connect")
-    public ResponseEntity<Response<Void>> connect() {
-        return ResponseEntity.ok(Response.payload(true, "200", "connect to user client"));
+    @Operation(summary = "제공되는 소셜 로그인 목록")
+    @GetMapping("/support")
+    public ResponseEntity<Response<OAuth2Provider[]>> connect() {
+        return ResponseEntity.ok(Response.payload(true,
+                "200",
+                oAuth2Service.getSupportedProviders(),
+                "list to social logins"));
     }
 
     @Operation(summary = "소셜 로그인 인가 코드 요청",
@@ -38,10 +43,12 @@ public class ApiController {
                     @ApiResponse(responseCode = "503", description = "서비스 점검 중이거나 사용할 수 없음.")
             }
     )
-    @GetMapping("/authorize")
-    public ResponseEntity<Response<String>> authorize(@RequestParam String provider,
-                                                      @RequestParam(required = false) String scope) {
-        return ResponseEntity.ok(oAuth2Service.getAuthUrl(provider, scope));
+    @PostMapping("/authorize")
+    public ResponseEntity<Response<OAuth2UrlResponse>> authorize(@RequestBody OAuth2UrlRequest oAuth2UrlRequest) {
+        return ResponseEntity.ok(Response.payload(true,
+                "200",
+                oAuth2Service.getAuthUrl(oAuth2UrlRequest),
+                "authorize success"));
     }
 
     @Operation(summary = "로그인 - 리다이렉트 처리시 사용자 정보 요청",
@@ -55,9 +62,10 @@ public class ApiController {
                     @ApiResponse(responseCode = "500", description = "서버 내부에서 예상치 못한 오류 발생.")
             }
     )
-    @PostMapping(value = "/login-redirect", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody OAuthRequest oAuthRequest) {
-        return ResponseEntity.ok(oAuth2Service.getUserProfile(oAuthRequest));
+    @PostMapping(value = "/callback", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody OAuth2CallbackRequest request) {
+        return ResponseEntity.ok(Response.payload(true,
+                "200", oAuth2Service.processCallback(request), "login success"));
     }
 
     @Operation(summary = "로그아웃 - 리프레시 토큰 무효화",

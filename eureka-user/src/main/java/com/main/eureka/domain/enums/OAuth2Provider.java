@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+ // application 설정에 추가한 registration 서치를 위한 enum
 @Getter
 public enum OAuth2Provider {
     KAKAO("kakao"),

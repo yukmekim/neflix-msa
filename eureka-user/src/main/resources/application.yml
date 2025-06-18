@@ -1,3 +1,5 @@
+base-uri: http://localhost:8080
+
 server:
   port: 8081
 
@@ -6,6 +8,25 @@ spring:
     name: eureka-user
   config:
     import: oauth2.yml
+  security:
+    oauth2:
+      client:
+        # 🔥중요한 포인트🔥 Spring Security 6.x 이후 부터 ClientAuthenticationMethod 사용 값이 변경됨
+        # - DefaultOAuth2TokenRequestParametersConverter 를 상속받음
+        # client-authentication-method 소셜 로그인별 요청 메소드가 다르니 꼭 확인하고 추가할것!!
+        registration:
+          kakao:
+            client-id: 193b02529f7a0bc6fa91fcd02350fccb
+            client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            redirect-uri: ${base-uri}/api/v1/user/redirect
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-name-attribute: id
   data:
     redis:
       host: localhost
