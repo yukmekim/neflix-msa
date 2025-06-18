@@ -17,14 +17,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "User Management", description = "사용자 관리 API")
+@Tag(name = "OAuth2 Management", description = "OAuth2 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/oauth2")
 public class ApiController {
     private final OAuth2ServiceImpl oAuth2Service;
 
-    @Operation(summary = "제공되는 소셜 로그인 목록")
+    @Operation(summary = "제공되는 소셜 로그인 목록",
+            description = "현재 제공되는 소셜 로그인 목록을 조회합니다. 개발자 확인용")
     @GetMapping("/support")
     public ResponseEntity<Response<OAuth2Provider[]>> connect() {
         return ResponseEntity.ok(Response.payload(true,

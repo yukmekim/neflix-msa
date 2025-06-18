@@ -45,7 +45,7 @@ dependencyManagement {
 }
 
 bootJar {
-    mainClass = 'com.main.eureka.UserClientApplication'
+    mainClass = 'com.main.eureka.OAuth2ClientApplication'
 }
 
 tasks.named('test') {

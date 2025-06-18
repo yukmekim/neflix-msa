@@ -35,17 +35,17 @@ spring:
 #                - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
 
             # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
-            - id: eureka-user
-              uri: lb://eureka-user
+            - id: oauth2-service
+              uri: lb://oauth2-service
               predicates:
                 - Path=/api/**
               filters:
                 - RewritePath=/api/(?<segment>.*), /api/$\{segment}
 
-            - id: eureka-user
-              uri: lb://eureka-user
+            - id: oauth2-service
+              uri: lb://oauth2-service
               predicates:
-                - Path=/v3/api-docs/eureka-user
+                - Path=/v3/api-docs/oauth2-service
               filters:
                 - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
 

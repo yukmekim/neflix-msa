@@ -5,9 +5,7 @@ server:
 
 spring:
   application:
-    name: eureka-user
-  config:
-    import: oauth2.yml
+    name: oauth2-service
   security:
     oauth2:
       client:
