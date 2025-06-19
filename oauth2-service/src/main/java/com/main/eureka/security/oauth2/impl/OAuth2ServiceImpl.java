@@ -62,8 +62,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
                     request.getState() : generateState();
 
             Set<String> scopes = parseScopes(request.getScope(), clientRegistration);
-            String redirectUri = StringUtils.hasText(request.getRedirectUri()) ?
-                    request.getRedirectUri() : clientRegistration.getRedirectUri();
+            String redirectUri = clientRegistration.getRedirectUri();
 
             OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest
                     .authorizationCode()
@@ -87,7 +86,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     }
 
     @Override
-    public OAuth2LoginResponse processCallback(OAuth2CallbackRequest request) {
+    public OAuth2LoginResponse getCallBack(OAuth2CallbackRequest request) {
         try {
             OAuth2Provider provider = OAuth2Provider.fromRegistrationId(request.getProvider());
             ClientRegistration clientRegistration = getClientRegistration(provider);
@@ -95,7 +94,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
             // Access Token 획득
             OAuth2AccessTokenResponse tokenResponse = getAccessToken(clientRegistration, request);
 
-            // 사용자 정보 획득후 직접 매핑
+            // 사용자 정보 획득후 사용자 정보 dto 매핑
             OAuth2UserInfo userInfo = getUserInfo(provider, tokenResponse.getAccessToken().getTokenValue());
 
             // TODO 스키마 설계 이후, RDBMS 사용자 조회 또는 생성
@@ -162,8 +161,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
      * */
     private OAuth2AccessTokenResponse getAccessToken(ClientRegistration clientRegistration,
                                                      OAuth2CallbackRequest request) {
-        String redirectUri = StringUtils.hasText(request.getRedirectUri()) ?
-                request.getRedirectUri() : clientRegistration.getRedirectUri();
+        String redirectUri = clientRegistration.getRedirectUri();
 
         OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest
                 .authorizationCode()

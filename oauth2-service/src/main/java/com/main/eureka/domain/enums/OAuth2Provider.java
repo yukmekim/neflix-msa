@@ -8,10 +8,10 @@ import java.util.Arrays;
 @Getter
 public enum OAuth2Provider {
     KAKAO("kakao"),
-    NAVER("naver"),
-    APPLE("apple");
+    NAVER("naver");
+    //APPLE("apple");
 
-    private String registrationId;
+    private final String registrationId;
     OAuth2Provider(String registrationId) {
         this.registrationId = registrationId;
     }

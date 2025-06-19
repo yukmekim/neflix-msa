@@ -14,5 +14,5 @@ public interface OAuth2Service {
 
     OAuth2UserInfo getUserInfo(OAuth2Provider provider, String accessToken);
 
-    OAuth2LoginResponse processCallback(OAuth2CallbackRequest request);
+    OAuth2LoginResponse getCallBack(OAuth2CallbackRequest request);
 }

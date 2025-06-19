@@ -64,9 +64,9 @@ public class ApiController {
             }
     )
     @PostMapping(value = "/callback", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<?>> loginRedirectRequest(@RequestBody OAuth2CallbackRequest request) {
+    public ResponseEntity<Response<?>> callback(@RequestBody OAuth2CallbackRequest request) {
         return ResponseEntity.ok(Response.payload(true,
-                "200", oAuth2Service.processCallback(request), "login success"));
+                "200", oAuth2Service.getCallBack(request), "login success"));
     }
 
     @Operation(summary = "로그아웃 - 리프레시 토큰 무효화",

@@ -7,9 +7,8 @@ import lombok.Data;
 @Data
 public class OAuth2UrlRequest {
     @NotBlank(message = "제공자는 필수!")
-    @Pattern(regexp = "^(kakao)$", message = "지원하지 않는 제공자입니다") // kakao|naver|apple 추후 추가 예정
+    @Pattern(regexp = "^(kakao|naver)$", message = "지원하지 않는 제공자입니다") // kakao|naver|apple 추후 추가 예정
     private String provider;
-    private String scope;
-    private String redirectUri;
     private String state;
+    private String scope;
 }
