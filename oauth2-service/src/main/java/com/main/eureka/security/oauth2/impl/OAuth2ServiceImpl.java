@@ -1,5 +1,6 @@
 package com.main.eureka.security.oauth2.impl;
 
+import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.api.dto.TokenResponse;
 import com.main.eureka.domain.enums.OAuth2Provider;
 import com.main.eureka.domain.repository.RefreshTokenRepository;
@@ -10,6 +11,7 @@ import com.main.eureka.security.oauth2.request.OAuth2UrlRequest;
 import com.main.eureka.security.oauth2.response.OAuth2LoginResponse;
 import com.main.eureka.security.oauth2.response.OAuth2UrlResponse;
 import com.main.eureka.security.oauth2.userinfo.OAuth2UserInfo;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +50,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
-     * 준비된 소셜 로그인 페이지를 전달합니다
+     * 준비된 소셜 로그인 페이지를 전달
      * @param request 로그인 페이지 인가를 위한 요청 값
      * @return oAuth2UrlResponse 소셜 로그인 페이지를 리턴합니다.
      * */
@@ -62,7 +64,8 @@ public class OAuth2ServiceImpl implements OAuth2Service {
                     request.getState() : generateState();
 
             Set<String> scopes = parseScopes(request.getScope(), clientRegistration);
-            String redirectUri = clientRegistration.getRedirectUri();
+            String redirectUri = StringUtils.hasText(request.getRedirectUri()) ?
+                    request.getRedirectUri() : clientRegistration.getRedirectUri();
 
             OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest
                     .authorizationCode()
@@ -85,6 +88,11 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         }
     }
 
+    /**
+     * 로그인 성공 결과에 따른 콜백 요청을 처리
+     * @param request 콜백 요청 전달 값
+     * @return OAuth2LoginResponse JWT 토큰값을 포함한 로그인 응답값을 리턴합니다.
+     * */
     @Override
     public OAuth2LoginResponse getCallBack(OAuth2CallbackRequest request) {
         try {
@@ -120,10 +128,10 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     }
 
     /**
-     * 전달 받은 사용자 정보를 DTO 에 매핑합니다.
+     * 전달 받은 사용자 정보를 DTO 에 매핑
      * @param provider 제공자 정보 enums
      * @param accessToken 소셜 로그인에서 발급 받은 accessToken
-     * @return OAuth2serInfo
+     * @return OAuth2UserInfo 사용자 정보를 리턴합니다.
      * */
     @Override
     public OAuth2UserInfo getUserInfo(OAuth2Provider provider, String accessToken) {
@@ -145,12 +153,32 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     }
 
     /**
-     * 현재 제공되는 소셜 로그인 목록을 리턴합니다. (개발자 확인용)
-     * @return oAuth2Provider[] 소셜 로그인 제공 목록
+     * 현재 제공되는 소셜 로그인 목록을 조회 (개발자 확인용)
+     * @return oAuth2Provider[] 소셜 로그인 제공 목록을 리턴합니다.
      * */
     @Override
     public OAuth2Provider[] getSupportedProviders() {
         return OAuth2Provider.values();
+    }
+
+    /**
+     * 리프레시 토큰을 무효화하여 로그아웃 치리
+     *
+     * @param refreshToken 리프레시 토큰 정보
+     */
+    @Override
+    public void logout(RefreshToken refreshToken) {
+        try {
+            String token = refreshToken.getRefreshToken();
+            // 요효한 토큰인지 우선 검증
+            if(jwtTokenProvider.validateToken(token)) {
+                refreshTokenRepository.delete(token);
+            } else {
+                throw new UnsupportedJwtException("유효하지 않은 토큰 정보입니다.");
+            }
+        } catch (UnsupportedJwtException uje) {
+            log.error("UnsupportedJwtException : {}", uje.getMessage());
+        }
     }
 
     /**
@@ -230,7 +258,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
      * 여러 개 요청시 중복 없는 리스트로 파싱
      * @param scope 동의 항목 (,)로 구분
      * @param clientRegistration oauth2 설정 registration 값
-     * @return clientRegistration.getScopes() 중복 없는 문자열 리스트를 반환
+     * @return clientRegistration.getScopes() 중복 없는 문자열 리스트를 리턴합니다.
      * */
     private Set<String> parseScopes(String scope, ClientRegistration clientRegistration) {
         if (StringUtils.hasText(scope)) {

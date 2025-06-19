@@ -11,4 +11,7 @@ public class OAuth2UrlRequest {
     private String provider;
     private String state;
     private String scope;
+
+    // 테스트 환경에 따른 redirectUri 요청 값
+    private String redirectUri;
 }

@@ -1,5 +1,6 @@
 package com.main.eureka.security.oauth2;
 
+import com.main.eureka.api.dto.RefreshToken;
 import com.main.eureka.domain.enums.OAuth2Provider;
 import com.main.eureka.security.oauth2.request.OAuth2CallbackRequest;
 import com.main.eureka.security.oauth2.request.OAuth2UrlRequest;
@@ -15,4 +16,6 @@ public interface OAuth2Service {
     OAuth2UserInfo getUserInfo(OAuth2Provider provider, String accessToken);
 
     OAuth2LoginResponse getCallBack(OAuth2CallbackRequest request);
+
+    void logout(RefreshToken refreshToken);
 }

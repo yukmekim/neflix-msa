@@ -73,6 +73,7 @@ public class ApiController {
             description = "리프레시 토큰을 무효화 로그아웃 처리")
     @PostMapping(value = "/logout")
     public ResponseEntity<Response<Void>> logout(@RequestBody RefreshToken refreshToken) {
+        oAuth2Service.logout(refreshToken);
         return ResponseEntity.ok(Response.payload(true, "200", "리프레시 토큰 무효화"));
     }
 

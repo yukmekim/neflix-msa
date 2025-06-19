@@ -40,11 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // SecurityContext에 인증 객체 설정
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ex) {
-            // JWT 유효성 검증 실패 시 로그 기록
-            logger.error("Could not set user authentication in security context", ex);
+        } catch (Exception e) {
+            logger.error("Could not set user authentication in security context", e);
         }
-
         filterChain.doFilter(request, response); // 다음 필터로 요청 전달
     }
 

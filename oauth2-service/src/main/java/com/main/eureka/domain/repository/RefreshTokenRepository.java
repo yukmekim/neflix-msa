@@ -23,4 +23,12 @@ public class RefreshTokenRepository {
                 token,
                 expiration, TimeUnit.MILLISECONDS);
     }
+
+    public void delete(String token) {
+        String userId = jwtTokenProvider.extractAllClaims(token).getSubject();
+        String id = jwtTokenProvider.extractAllClaims(token).getId();
+
+        String key = String.format("%s%s:%s",TOKEN_KEY, userId, id);
+        redisTemplate.delete(key);
+    }
 }
