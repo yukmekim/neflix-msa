@@ -1,4 +1,5 @@
 rootProject.name = 'msa'
 include 'eureka-server',
         'eureka-gateway',
-        'oauth2-service'
+        'oauth2-service',
+        'user-service'

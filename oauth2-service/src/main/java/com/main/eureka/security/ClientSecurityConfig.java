@@ -1,4 +1,5 @@
 package com.main.eureka.security;
+import com.main.eureka.security.handler.AuthenticationFailureHandler;
 import com.main.eureka.security.jwt.JwtAuthenticationFilter;
 import com.main.eureka.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class ClientSecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,6 +33,7 @@ public class ClientSecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/v3/swagger-ui/**", "/v3/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationFailureHandler))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

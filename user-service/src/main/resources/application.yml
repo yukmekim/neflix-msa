@@ -1,0 +1,28 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: user-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://host.docker.internal:8761/eureka/'
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    #    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port} #ip 주소로 등록
+    lease-renewal-interval-in-seconds: 30  # 하트비트 간격(기본 30초)
+    lease-expiration-duration-in-seconds: 90  # 등록 만료 시간(기본 90초)
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    path: /v3/api-docs
+
+openapi:
+  service:
+    url: http://192.168.0.68:8080

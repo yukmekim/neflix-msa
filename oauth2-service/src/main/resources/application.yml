@@ -14,14 +14,14 @@ spring:
         # client-authentication-method 소셜 로그인별 요청 메소드가 다르니 꼭 확인하고 추가할것!!
         registration:
           kakao:
-            client-id: #your id
-            client-secret: #your secret
+            client-id: 193b02529f7a0bc6fa91fcd02350fccb
+            client-secret: xplQTJyJjK4IlKylvykJpxZ4nPkqoSB2
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             redirect-uri: ${base-uri}/api/v1/oauth2/redirect
           naver:
-            client-id: #your id
-            client-secret: #your secret
+            client-id: I5lGVeZNIE48eKBWpG6e
+            client-secret: fa4MGQflGY
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             redirect-uri: ${base-uri}/api/v1/oauth2/redirect
@@ -68,3 +68,7 @@ jwt:
   secret: XqJ7f2t+a3V8c3l+Z29xM3p1OHcwMXE0cmQ2czV0N3g5eTJrYWs0bG1uNTVvN3A2cTByc3U3dnk4d3h5ejk=
   expiration-time: 60000 # 만료 시간 (밀리초) 5분
   refresh-expiration-time: 604800000 # 리프레시 토큰 만료 시간 (밀리초) 7일
+
+openapi:
+  service:
+    url: http://192.168.0.68:8080

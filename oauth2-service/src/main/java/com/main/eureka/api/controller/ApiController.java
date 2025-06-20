@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "OAuth2 Management", description = "OAuth2 API")
@@ -28,6 +30,11 @@ public class ApiController {
             description = "현재 제공되는 소셜 로그인 목록을 조회합니다. 개발자 확인용")
     @GetMapping("/support")
     public ResponseEntity<Response<OAuth2Provider[]>> connect() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();;
+        String userId = auth.getName();
+
+        System.out.println(userId);
+
         return ResponseEntity.ok(Response.payload(true,
                 "200",
                 oAuth2Service.getSupportedProviders(),
@@ -75,6 +82,14 @@ public class ApiController {
     public ResponseEntity<Response<Void>> logout(@RequestBody RefreshToken refreshToken) {
         oAuth2Service.logout(refreshToken);
         return ResponseEntity.ok(Response.payload(true, "200", "리프레시 토큰 무효화"));
+    }
+
+    @Operation(summary = "리프레시 토큰 갱신",
+            description = "리프레시 토큰을 무효화 로그아웃 처리")
+    @PostMapping(value = "/refresh")
+    public ResponseEntity<Response<Void>> refresh(@RequestBody RefreshToken refreshToken) {
+        oAuth2Service.logout(refreshToken);
+        return ResponseEntity.ok(Response.payload(true, "200", "리프레시 토큰 갱신"));
     }
 
     /**

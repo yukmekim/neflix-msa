@@ -1,7 +1,10 @@
 package com.main.eureka.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OpenApiCustomizer;
@@ -53,24 +56,43 @@ public class SwaggerConfig {
 //            }));
 //        };
 //    }
+//    @Bean
+//    public OpenAPI openAPI() {
+//        return new OpenAPI()
+//                .info(new Info()
+//                        .title("Swagger API Gateway")
+//                        .version("1.0"))
+//                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+//                .components(new Components()
+//                        .addSecuritySchemes("BearerAuth", securityScheme()));
+//    }
+//
+//    @Bean
+//    public List<GroupedOpenApi> dynamicGroups() {
+//        return discoveryClient.getServices().stream()
+//                .filter(service -> !service.equals("eureka-gateway"))
+//                .map(service -> GroupedOpenApi.builder()
+//                        .group(service)
+//                        .pathsToMatch("/" + service + "/**")
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Bean
+//    public CommandLineRunner initGroups(SwaggerUiConfigParameters config) {
+//        return args -> {
+//            discoveryClient.getServices().stream()
+//                    .filter(service -> !service.equals("eureka-gateway")) // gateway 는 Swagger UI 그룹에서 제외
+//                    .forEach(config::addGroup);
+//        };
+//    }
 
-    @Bean
-    public List<GroupedOpenApi> dynamicGroups() {
-        return discoveryClient.getServices().stream()
-                .filter(service -> !service.equals("eureka-gateway"))
-                .map(service -> GroupedOpenApi.builder()
-                        .group(service)
-                        .pathsToMatch("/" + service + "/**")
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    @Bean
-    public CommandLineRunner initGroups(SwaggerUiConfigParameters config) {
-        return args -> {
-            discoveryClient.getServices().stream()
-                    .filter(service -> !service.equals("eureka-gateway")) // gateway 는 Swagger UI 그룹에서 제외
-                    .forEach(config::addGroup);
-        };
-    }
+//    private SecurityScheme securityScheme() {
+//        return new SecurityScheme()
+//                .type(SecurityScheme.Type.HTTP)
+//                .scheme("bearer")
+//                .bearerFormat("JWT")
+//                .in(SecurityScheme.In.HEADER)
+//                .name("Authorization");
+//    }
 }

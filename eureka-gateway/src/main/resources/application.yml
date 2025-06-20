@@ -8,32 +8,7 @@ spring:
     gateway:
       server:
         webflux:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-              include-expression: "serviceId.matches('.*-service')"
-              filters:
-                - StripPrefix=1               # 기본 필터 적용
-                - name: CircuitBreaker        # 모든 서비스에 Circuit Breaker 적용
-                  args:
-                    name: default-circuit-breaker
-                    fallback: forward:/fallback
           routes:
-#            - id: openapi-aggregate
-#              uri: http://localhost:8080
-#              predicates:
-#                - Path=/api/**
-#              filters:
-#                - RewritePath=/api/(?<segment>.*), /api/$\{segment}
-
-#            - id: openapi-aggregate
-#              uri: http://localhost:8080
-#              predicates:
-#                - Path=/v3/api-docs/**
-#              filters:
-#                - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
-
             # TODO API Client 추가할때마다 라우팅 규칙 추가 (유연한 방법 고민 필요)
             - id: oauth2-service
               uri: lb://oauth2-service
@@ -49,14 +24,50 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
 
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /api/$\{segment}
+
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/v3/api-docs/user-service
+              filters:
+                - RewritePath=/v3/api-docs/(?<segment>.*), /v3/api-docs
+
   main:
     web-application-type: reactive
 
 springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
   swagger-ui:
-    url: /v3/api-docs
+    url: /swagger-ui.html
     use-root-path: true
-    validator-url: ""
+    enabled: true
+    urls:
+      - name: oauth2-service
+        url: /v3/api-docs/oauth2-service
+      - name: user-service
+        url: /v3/api-docs/user-service
+#  api-docs:
+#    enabled: true
+#    path: /v3/api-docs
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    use-root-path: true # 기본 경로를 스웨거 주소로 설정
+#    enabled: true
+#    config-url: /v3/api-docs/swagger-config
+#    urls:
+#      - name: eureka-gateway
+#        url: /v3/api-docs
+#      - name: oauth2-service
+#        url: /api/v1/oauth2/v3/api-docs
+#    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
 
 eureka:
   client:

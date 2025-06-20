@@ -21,14 +21,25 @@ services:
     depends_on:
       - eureka-server
 
-  # user service
-  eureka-user:
+  # oauth2-service
+  oauth2-service:
     build:
       context: . # 빌드 컨텍스트를 프로젝트 root 폴더로 설정
-      dockerfile: ./eureka-user/Dockerfile # 클라이언트 모듈의 Dockerfile 경로 지정
-    container_name: eureka-user-container
+      dockerfile: ./oauth2-service/Dockerfile # 클라이언트 모듈의 Dockerfile 경로 지정
+    container_name: oauth2-service-container
     ports:
       - "8081:8081"
+    depends_on:
+      - eureka-server
+
+  # user service
+  user-service:
+    build:
+      context: . # 빌드 컨텍스트를 프로젝트 root 폴더로 설정
+      dockerfile: ./user-service/Dockerfile # 클라이언트 모듈의 Dockerfile 경로 지정
+    container_name: user-service-container
+    ports:
+      - "8082:8082"
     depends_on:
       - eureka-server
 
