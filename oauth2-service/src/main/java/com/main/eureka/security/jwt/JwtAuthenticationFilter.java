@@ -28,14 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwt != null && jwtTokenProvider.validateToken(jwt)) { // 토큰이 유효한지 검증
                 // 토큰에서 사용자 ID/클레임 추출
-                String userId = jwtTokenProvider.extractAllClaims(jwt).getSubject(); // subject = userId
-
-                // 인증 객체 생성
-                // 실제 애플리케이션에서는 userId를 통해 DB에서 사용자 정보를 가져와 GrantedAuthority를 설정합니다.
-                // 여기서는 간단하게 USER 권한을 부여합니다.
-//                Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                        userDetails, null, userDetails.getAuthorities());
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String userId = jwtTokenProvider.extractAllClaims(jwt).getSubject();
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userId, null, Collections.emptyList() // 사용자의 권한 (GrantedAuthority) 리스트

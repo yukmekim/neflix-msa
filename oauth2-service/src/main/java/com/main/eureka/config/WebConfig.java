@@ -27,6 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 
         // 모든 요청 단계에서 허용
         source.registerCorsConfiguration("/**", config);
+
+
         return new CorsFilter(source);
     }
 }
